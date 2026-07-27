@@ -228,7 +228,7 @@ const renderStars = () => {
                     {farmer.location}
                   </div>
                   <div className="mt-2 flex items-center justify-center gap-2 text-sm">
-                    {renderStars(farmer.rating)}
+                    {renderStars()}
                   </div>
                 </div>
 

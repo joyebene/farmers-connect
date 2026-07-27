@@ -58,7 +58,7 @@ export default function FarmerProductsPage() {
   <div className="container mx-auto py-10">
 
     <h1 className="mb-8 text-4xl font-bold">
-      {farmerName}'s Products
+      {farmerName}&apos;s Products
     </h1>
 
     {products.length === 0 ? (
@@ -101,7 +101,7 @@ export default function FarmerProductsPage() {
               </p>
 
               <Link
-                href={`/products/${product._id}`}
+                href={`buyers-view/products/${product._id}`}
               >
                 <Button className="w-full mt-4">
                   View Product
