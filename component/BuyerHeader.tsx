@@ -26,14 +26,6 @@ export default function BuyersHeader() {
       name: "Farmers",
       href: "/buyers-view/farmers",
     },
-    {
-      name: "About",
-      href: "/about",
-    },
-    {
-      name: "Contact",
-      href: "/contact",
-    },
   ];
 
   return (
