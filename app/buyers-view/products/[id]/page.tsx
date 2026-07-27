@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import apiClient from '@/lib/apiClient';
-import { useCart } from '@/context/CartContext';
 import Button from '@/component/Button';
 import Spinner from '@/component/Spinner';
+import { MessageCircle } from "lucide-react";
 
 interface Farmer {
     _id: string;
@@ -30,12 +30,20 @@ interface Product {
 const ProductDetailPage = () => {
     const params = useParams();
     const { id } = params;
-    const { addToCart } = useCart();
-
     const [product, setProduct] = useState<Product | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedImage, setSelectedImage] = useState<string>('');
+    const [showMessageModal, setShowMessageModal] = useState(false);
+
+    const [sending, setSending] = useState(false);
+
+    const [formData, setFormData] = useState({
+        fullName: "",
+        phone: "",
+        email: "",
+        message: "",
+    });
 
     useEffect(() => {
         if (id) {
@@ -62,6 +70,48 @@ const ProductDetailPage = () => {
         }
     }, [id]);
 
+    const handleSendMessage = async () => {
+        if (!product) return;
+
+        try {
+            setSending(true);
+
+            const response = await fetch("/api/messages", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    farmerId: product.farmer._id,
+                    ...formData,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message);
+            }
+
+            alert("Message sent successfully!");
+
+            setFormData({
+                fullName: "",
+                phone: "",
+                email: "",
+                message: "",
+            });
+
+            setShowMessageModal(false);
+        } catch (error: any) {
+            alert(error.message);
+        } finally {
+            setSending(false);
+        }
+    };
+
+
+
     if (isLoading) {
         return <Spinner />;
     }
@@ -74,17 +124,6 @@ const ProductDetailPage = () => {
         return <div className="text-center py-20">Product not found.</div>;
     }
 
-    const handleAddToCart = () => {
-        if (product) {
-            addToCart({
-                id: product._id,
-                name: product.title,
-                price: product.price,
-                image: product.images[0] || '/imgs/default-product.png',
-            });
-            alert(`${product.title} has been sent to your farmer!`);
-        }
-    };
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -122,7 +161,7 @@ const ProductDetailPage = () => {
                 <div className="flex flex-col">
                     <h1 className="text-3xl md:text-4xl font-bold mb-2">{product.title}</h1>
                     <p className="text-2xl font-semibold text-green-600 mb-4">${product.price.toFixed(2)}</p>
-                    
+
                     <div className="mb-6">
                         <h3 className="font-semibold text-lg mb-2">Description</h3>
                         <p className="text-gray-700 whitespace-pre-wrap">{product.description}</p>
@@ -135,21 +174,118 @@ const ProductDetailPage = () => {
                     </div>
 
                     <div className="mt-auto pt-6 border-t border-gray-400">
-                         <h3 className="font-semibold text-lg mb-3">About the Farmer</h3>
-                         <div className="flex items-center">
+                        <h3 className="font-semibold text-lg mb-3">About the Farmer</h3>
+                        <div className="flex items-center">
                             {/* You can add a farmer profile picture here later */}
                             <div>
                                 <p className="font-bold">{product.farmer.fullName}</p>
                                 <p className="text-gray-600 text-sm">{product.farmer.location}</p>
                             </div>
-                         </div>
+                        </div>
                     </div>
-                    
+
                     <div className="mt-6">
-                        <Button onClick={handleAddToCart} className="w-full">Message Farmer</Button>
+                        <Button
+                            onClick={() => setShowMessageModal(true)}
+                            className="w-full"
+                        >
+                            <MessageCircle className="mr-2 h-4 w-4" />
+                            Message Farmer
+                        </Button>
                     </div>
                 </div>
             </div>
+
+            {showMessageModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+
+      <h2 className="text-2xl font-bold">
+        Contact {product.farmer.fullName}
+      </h2>
+
+      <p className="mt-1 text-sm text-gray-500">
+        Fill in your details and the farmer will contact you.
+      </p>
+
+      <div className="mt-6 space-y-4">
+
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={formData.fullName}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              fullName: e.target.value,
+            })
+          }
+          className="w-full rounded-lg border p-3"
+        />
+
+        <input
+          type="text"
+          placeholder="Phone Number"
+          value={formData.phone}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              phone: e.target.value,
+            })
+          }
+          className="w-full rounded-lg border p-3"
+        />
+
+        <input
+          type="email"
+          placeholder="Email (Optional)"
+          value={formData.email}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              email: e.target.value,
+            })
+          }
+          className="w-full rounded-lg border p-3"
+        />
+
+        <textarea
+          rows={5}
+          placeholder="Write your message..."
+          value={formData.message}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              message: e.target.value,
+            })
+          }
+          className="w-full rounded-lg border p-3"
+        />
+
+      </div>
+
+      <div className="mt-6 flex justify-end gap-3">
+
+        <Button
+          variant="outline"
+          onClick={() => setShowMessageModal(false)}
+        >
+          Cancel
+        </Button>
+
+        <Button
+          onClick={handleSendMessage}
+          disabled={sending}
+        >
+          {sending ? "Sending..." : "Send Message"}
+        </Button>
+
+      </div>
+
+    </div>
+  </div>
+)}
+
         </div>
     );
 };

@@ -93,17 +93,6 @@ export default function BuyersHeader() {
         <div className="flex items-center gap-3">
 
           <Link
-            href="/buyers-view/cart"
-            className="relative rounded-full border p-3 hover:bg-slate-100"
-          >
-            <ShoppingCart className="h-5 w-5" />
-
-            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-xs text-white">
-              0
-            </span>
-          </Link>
-
-          <Link
             href="/login"
             className="hidden rounded-full bg-green-600 px-5 py-2.5 font-medium text-white transition hover:bg-green-700 md:block"
           >

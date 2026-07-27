@@ -126,7 +126,7 @@ export default function MessagesPage() {
 
               <tr
                 key={message._id}
-                className="border-t hover:bg-gray-50"
+                className="border-t border-gray-300 hover:bg-gray-50"
               >
 
                 <td className="px-6 py-5">

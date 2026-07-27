@@ -31,7 +31,7 @@ const LoginPage = () => {
 
       if (res.ok) {
         const data = await res.json();
-
+        
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('role', data.user.role);
         router.push('/dashboard');

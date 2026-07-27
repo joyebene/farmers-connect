@@ -64,7 +64,7 @@ export const FarmerDashoard = () => {
 
 
         <Link
-          href="/dashboard/post-products"
+          href="/post-product"
           className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-white hover:bg-green-700 w-fit"
         >
           <Plus size={18} />

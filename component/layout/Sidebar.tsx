@@ -46,15 +46,14 @@ const Sidebar = ({
       ]
       : [
         { href: "/dashboard", label: "Dashboard" },
-        { href: "/products", label: "My Products" },
-        { href: "/post-product", label: "Post Product" },
-        { href: "/messages", label: "Messages" },
+        { href: "/my-products", label: "My Products" },
+        {href: '/post-product', label: 'Post Product' },
+        { href: "/message", label: "Messages" },
         { href: "/profile", label: "Profile" },
       ];
 
-  if (role === 'farmer') {
-    links.push({ href: '/post-product', label: 'Post Product' });
-  }
+      console.log(role);
+      
 
   return (
     <aside

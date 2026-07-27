@@ -14,6 +14,7 @@ import {
   Phone,
 } from "lucide-react";
 import Spinner from "@/component/Spinner";
+import Image from "next/image";
 
 interface Farmer {
   _id: string;
@@ -233,8 +234,11 @@ export default function FarmersPage() {
 
                     {farmer.profileImage ? (
 
-                      <img
+                      <Image
                         src={farmer.profileImage}
+                        alt="farmer profile image"
+                        width={50}
+                        height={50}
                         className="h-12 w-12 rounded-full object-cover"
                       />
 
@@ -292,7 +296,7 @@ export default function FarmersPage() {
 
                 <td>
 
-                  <div className="flex justify-center gap-4">
+                  <div className="flex justify-center gap-4 sm:mr-3">
 
                     <Link
                       href={`/farmers/${farmer._id}`}
@@ -307,12 +311,6 @@ export default function FarmersPage() {
                     >
                       <Pencil size={18} />
                     </Link>
-
-                    <button
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <Trash2 size={18} />
-                    </button>
 
                   </div>
 

@@ -52,7 +52,8 @@ export default function FarmersPage() {
 
       const data = await response.json();
 
-      console.log(data);
+      console.log(data.farmers);
+      
 
 
       if (!response.ok) {
@@ -61,18 +62,16 @@ export default function FarmersPage() {
 
       const farmers: Farmer[] = data.farmers.map((farmer: any) => ({
         id: farmer._id,
-        fullName: `${farmer.firstName} ${farmer.lastName}`,
+        fullName: farmer.fullName,
         email: farmer.email,
         phone: farmer.phone,
-        location: farmer.location,
+        location: farmer.address,
         avatar: farmer.avatar || "/images/default-avatar.png",
-        rating: farmer.rating || 0,
-        totalSales: farmer.totalSales || 0,
-        products: farmer.products?.length || 0,
         joinDate: farmer.createdAt,
         description: farmer.description || "",
         verified: farmer.verified || false,
       }));
+      
 
       setFarmers(farmers);
       setFilteredFarmers(farmers);
@@ -84,63 +83,7 @@ export default function FarmersPage() {
   };
 
   useEffect(() => {
-    const dummyFarmers: Farmer[] = [
-      {
-        id: "1",
-        firstName: "John",
-        lastName: "Okafor",
-        fullName: "John Okafor",
-        email: "john.okafor@example.com",
-        phone: "08012345678",
-        location: "Enugu State",
-        avatar: "",
-        rating: 4.8,
-        totalSales: 145,
-        products: 18,
-        joinDate: "2024-01-15",
-        description: "Experienced farmer specializing in fresh vegetables, tomatoes, peppers, and cucumbers.",
-        verified: true,
-      },
-      {
-        id: "2",
-        firstName: "Amina",
-        lastName: "Bello",
-        fullName: "Amina Bello",
-        email: "amina.bello@example.com",
-        phone: "08087654321",
-        location: "Kaduna State",
-        avatar: "",
-        rating: 4.6,
-        totalSales: 98,
-        products: 12,
-        joinDate: "2023-10-22",
-        description: "Producer of quality maize, rice, millet, and other grains for wholesale and retail buyers.",
-        verified: true,
-      },
-      {
-        id: "3",
-        firstName: "Chinedu",
-        lastName: "Nwosu",
-        fullName: "Chinedu Nwosu",
-        email: "chinedu.nwosu@example.com",
-        phone: "08123456789",
-        location: "Anambra State",
-        avatar: "",
-        rating: 4.9,
-        totalSales: 231,
-        products: 25,
-        joinDate: "2023-05-10",
-        description: "Organic fruit farmer supplying oranges, pineapples, mangoes, and bananas across Nigeria.",
-        verified: true,
-      },
-    ];
-
-    setFarmers(dummyFarmers);
-    setFilteredFarmers(dummyFarmers);
-    setLoading(false);
-
-    // Uncomment tomorrow
-    // fetchFarmers();
+    fetchFarmers();
   }, []);
   // Filter farmers based on search and location
   useEffect(() => {
@@ -166,26 +109,21 @@ export default function FarmersPage() {
   // Get unique locations for filter
   const locations = Array.from(new Set(farmers.map((f) => f.location)));
 
-  const renderStars = (rating: number) => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
-    return (
-      <div className="flex items-center gap-0.5">
-        {[...Array(fullStars)].map((_, i) => (
-          <Star key={`full-${i}`} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-        ))}
-        {hasHalfStar && (
-          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-        )}
-        {[...Array(emptyStars)].map((_, i) => (
-          <Star key={`empty-${i}`} className="h-4 w-4 text-gray-300" />
-        ))}
-        <span className="ml-1 text-sm font-medium text-gray-600">{rating}</span>
-      </div>
-    );
-  };
+const renderStars = () => {
+  return (
+    <div className="flex items-center gap-0.5">
+      {[...Array(5)].map((_, i) => (
+        <Star
+          key={i}
+          className="h-4 w-4 fill-yellow-400 text-yellow-400"
+        />
+      ))}
+      <span className="ml-1 text-sm font-medium text-gray-600">
+        5.0
+      </span>
+    </div>
+  );
+};
 
   if (loading) {
     return <Loader />;
@@ -255,14 +193,13 @@ export default function FarmersPage() {
             {filteredFarmers.map((farmer) => (
               <Link
                 key={farmer.id}
-                href={`/farmers/${farmer.id}`}
+                href={`/buyers-view/farmers/products/${farmer.id}`}
                 className="group rounded-2xl bg-white p-6 shadow-sm transition-all hover:shadow-xl"
               >
                 {/* Avatar */}
                 <div className="relative mx-auto h-24 w-24">
                   <div className="flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br from-green-100 to-green-200 text-4xl font-bold text-green-700">
-                    {farmer.firstName?.charAt(0)}
-                    {farmer.lastName?.charAt(0)}
+                    {farmer.fullName.charAt(0)}
                   </div>
                   {farmer.verified && (
                     <div className="absolute -bottom-1 -right-1 rounded-full bg-green-500 p-1">
@@ -292,28 +229,6 @@ export default function FarmersPage() {
                   </div>
                   <div className="mt-2 flex items-center justify-center gap-2 text-sm">
                     {renderStars(farmer.rating)}
-                  </div>
-                </div>
-
-                {/* Stats */}
-                <div className="mt-4 grid grid-cols-3 gap-2 border-t border-gray-100 pt-4 text-center">
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {farmer.products}
-                    </p>
-                    <p className="text-xs text-gray-500">Products</p>
-                  </div>
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {farmer.totalSales}
-                    </p>
-                    <p className="text-xs text-gray-500">Sales</p>
-                  </div>
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {farmer.rating}
-                    </p>
-                    <p className="text-xs text-gray-500">Rating</p>
                   </div>
                 </div>
 

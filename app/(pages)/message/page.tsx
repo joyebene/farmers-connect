@@ -22,7 +22,7 @@ export default function MessagesPage() {
 
   async function fetchMessages() {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("accessToken");
 
       const res = await fetch("/api/messages", {
         headers: {
