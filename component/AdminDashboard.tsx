@@ -90,7 +90,7 @@ export function AdminDashboard() {
         <div className="grid gap-4 md:grid-cols-4">
 
           <Link
-            href="/dashboard/farmers"
+            href="/farmers"
             className="rounded-xl border border-gray-300 p-5 hover:bg-green-50"
           >
             <Package className="text-green-600 mb-3" />
