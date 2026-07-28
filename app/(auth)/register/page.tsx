@@ -15,8 +15,9 @@ const RegisterPage = () => {
     confirmPassword: '',
     phone: '',
     address: '',
-    role: 'admin',
+    role: 'farmer',
   });
+  const  [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -25,6 +26,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match");
@@ -42,16 +44,21 @@ const RegisterPage = () => {
 
       if (res.ok) {
         const data = await res.json();
+        
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('role', data.user.role);
         router.push('/dashboard');
       } else {
         const data = await res.json();
         alert(data.message || 'Something went wrong');
+        setLoading(false);
       }
     } catch (error) {
       console.error(error);
       alert('Something went wrong');
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -162,7 +169,7 @@ const RegisterPage = () => {
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <Button type="submit" className="w-full">Get Growing</Button>
+            <Button disabled={loading} type="submit" className="w-full">{loading ? "Loading..." : "Get Growing" }</Button>
           </div>
         </form>
         <p className="text-center text-gray-500 text-xs mt-6">

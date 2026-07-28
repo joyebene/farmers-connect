@@ -12,6 +12,7 @@ const LoginPage = () => {
     email: '',
     password: '',
   });
+   const  [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -19,6 +20,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -38,10 +40,14 @@ const LoginPage = () => {
       } else {
         const data = await res.json();
         alert(data.message || 'Something went wrong');
+        setLoading(false);
       }
     } catch (error) {
       console.error(error);
       alert('Something went wrong');
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,10 +94,11 @@ const LoginPage = () => {
           </div>
           <div className="flex items-center justify-between">
             <Button
+            disabled={loading}
               type="submit"
               className="bg-yellow-600 hover:bg-yellow-700 w-full"
             >
-              Log In
+              {loading ? "Loading..." : "Log In"}
             </Button>
           </div>
         </form>
