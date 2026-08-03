@@ -114,7 +114,6 @@ export default function MessagesPage() {
               <th>Phone</th>
               <th>Status</th>
               <th>Date</th>
-              <th className="text-center">Action</th>
 
             </tr>
 
@@ -193,21 +192,6 @@ export default function MessagesPage() {
 
                 <td>
                   {new Date(message.createdAt).toLocaleDateString()}
-                </td>
-
-                <td>
-
-                  <div className="flex justify-center">
-
-                    <Link
-                      href={`/messages/${message._id}`}
-                      className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
-                    >
-                      <Eye size={18} />
-                    </Link>
-
-                  </div>
-
                 </td>
 
               </tr>
