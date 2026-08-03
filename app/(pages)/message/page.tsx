@@ -73,7 +73,7 @@ export default function MessagesPage() {
             {msg.message}
           </p>
 
-          <button onClick={() => router.push(`/messages/${msg._id}`)} className="mt-4 rounded-lg bg-green-600 px-4 py-2 text-white">
+          <button onClick={() => router.push(`/message/${msg._id}`)} className="mt-4 rounded-lg bg-green-600 px-4 py-2 text-white">
             View Message
           </button>
         </div>
