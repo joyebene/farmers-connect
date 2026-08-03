@@ -22,6 +22,10 @@ export async function GET(
       );
     }
 
+    console.log(auth);
+    console.log(auth.user);
+    console.log(auth.user.role);
+
     if (auth.user.role !== "farmer") {
       return NextResponse.json(
         {
